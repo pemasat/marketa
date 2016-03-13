@@ -18,7 +18,9 @@
 	}
 
 
-	// &.has1col .col { width: 100%; }
-	// &.has2col .col { width: 49%; }
-	// &.has3col .col { width: 33%; }
+	&.has1col .col { width: 100%; }
+	&.has2col .col { width: 49%; }
+	&.has3col .col { width: 33%; }
+
+
 }
