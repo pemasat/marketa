@@ -31,3 +31,9 @@ node_modules
 
 # Optional REPL history
 .node_repl_history
+
+# Frontend folders
+bower_components
+
+# Webapp folders
+css

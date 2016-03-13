@@ -1,0 +1,28 @@
+@import './variable';
+
+body {
+	font-size: 1.2em;
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+body {
+
+	&,
+	a {
+		color: $font-color;
+	}
+
+	p,
+	ul, ol,
+	table {
+		margin-bottom: 1em;
+	}
+	h1, h2, h3, h4, h5, h6 {
+		margin-bottom: 0.3em;
+	}
+
+}
+
+h1 {
+	font-size: 160%;
+}
