@@ -1,3 +1,6 @@
+/*global require, module,  __dirname */
+/*jslint node: true */
+
 'use strict';
 
 var gulp = require('gulp');
@@ -16,7 +19,26 @@ var
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
 	path = require('path'),
-	fs = require('fs');
+	fs = require('fs'),
+	gls = require('gulp-live-server');
+
+
+gulp.task('serve', function() {
+	var server = gls.static(['dist']);
+	server.start();
+
+
+	//use gulp.watch to trigger server actions(notify, start or stop)
+	gulp.watch(['dist/css/**/*.css', 'dist/**/*.html'], function (file) {
+		server.notify.apply(server, [file]);
+	});
+
+	gulp.watch(['scss/**/*.scss', '!scss/sprites/*.*', jsSource], function() {
+		console.log('---------------------------------');
+		gulp.start('default');
+	});
+
+});
 
 var jsSource = [
 	'bower_components/jquery/dist/jquery.min.js'
@@ -36,7 +58,7 @@ gulp.task('scripts', function () {
 		.pipe(concat('all.js'));
 	var polyfills = scripts
 		.pipe(autopolyfiller('polyfills.js', function () {
-			browsers: ['last 20 versions']
+			browsers: ['last 3 versions']
 		})
 	);
 	return merge(polyfills, scripts)
@@ -49,8 +71,8 @@ gulp.task('scripts', function () {
 		.pipe(gulp.dest('js'));
 });
 
-/* 
- * sass a autoprefixer v jednem tasku 
+/*
+ * sass a autoprefixer v jednem tasku
  * vychozi soubor css/main.css
  *
  * ignoruje soubory se sprity
@@ -64,10 +86,10 @@ gulp.task('styles', function () {
 			cascade: false
 		}))
 		.pipe(concat('main.css'))
-		.pipe(gulp.dest('css'));
+		.pipe(gulp.dest('dist/css'));
 });
 
-/* 
+/*
  * funkce která prochází všemi složky se sprity
  * a zpracová je po jedné v cyklu
  * aby se nevytvoril jeden velky spite ze vsech ikonek
@@ -80,9 +102,9 @@ function getFolders(dir) {
 		});
 }
 
-var pathToSprites = 'img/sprites';
+var pathToSprites = 'sprites';
 
-/* 
+/*
  * toto je task na vytvoreni scss stylu,
  * do slozky img/sprites/nazevSpritu/
  * vlozime jen obrazky (ikonky)
@@ -100,7 +122,7 @@ var pathToSprites = 'img/sprites';
  * napriklad:
  * img/sprites/nazevSpritu1
  * img/sprites/nazevSpritu2
- * 
+ *
  * tvorit mixiny je nutne v jinych souborech
  * nez vytvorenych taskem
  * pridat na zacatku @import "sprite-nazevSpritu.scss"
@@ -114,7 +136,7 @@ gulp.task('spritesScss', function() {
 	var folders = getFolders(pathToSprites);
 	var tasks = folders.map(function(folder) {
 	var source = pathToSprites + '/' + folder + '/*.*';
-	
+
 	if (folder !== 'templates'){
 		var spriteData = gulp.src(source)
 				.pipe(sprite({
@@ -155,5 +177,5 @@ gulp.task('watch', function () {
 	gulp.watch(['scss/**/*.scss', '!scss/sprites/*.*', jsSource], function() {
 		console.log('---------------------------------');
 		gulp.start('default');
-	}); 
-}); 
+	});
+});
