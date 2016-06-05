@@ -20,11 +20,12 @@ var
 	replace = require('gulp-replace'),
 	path = require('path'),
 	fs = require('fs'),
-	gls = require('gulp-live-server');
+	gls = require('gulp-live-server'),
+	sourcemaps = require('gulp-sourcemaps');
 
 
 gulp.task('serve', function() {
-	var server = gls.static(['dist']);
+	var server = gls.static(['dist', 'scss']);
 	server.start();
 
 
@@ -80,12 +81,14 @@ gulp.task('scripts', function () {
 
 gulp.task('styles', function () {
 	return gulp.src(['scss/**/*.scss', '!scss/sprites/*.*'])
+		.pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(autoprefixer({
 			browsers: ['last 4 versions'],
 			cascade: false
 		}))
 		.pipe(concat('main.css'))
+		.pipe(sourcemaps.write({includeContent: false, sourceRoot: '/'}))
 		.pipe(gulp.dest('dist/css'));
 });
 
